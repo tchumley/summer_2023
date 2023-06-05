@@ -31,13 +31,15 @@ max_interkick_time = 8;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%% Monte Carlo simulation %%%%%%%%
-number_of_trials = 10000;
+number_of_trials = 100;
 excursion_indicator = zeros(number_of_trials,1);
 excursion_time = zeros(number_of_trials,1);
 
 tic;
 parfor k = 1:number_of_trials
-    [excursion_indicator(k), excursion_time(k)] = trial();
+    [excursion_indicator(k), excursion_time(k)] = trial(exp_uniform, ...
+        min_kick_size, max_kick_size, lambda, ...
+        min_interkick_time, max_interkick_time);
 end
 toc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,21 +60,23 @@ histogram(excursion_time(~isnan(excursion_time)), 9, 'Normalization','PDF')
 %%
 %%%%%%%%%%%%%%%% trial function %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Summary: the following function runs a single trial of a flow-kick
-%   simulation using stochastic kicks that arrive according to a Poisson 
+%   simulation using stochastic kicks that arrive according to a Poisson
 %   process with rate lambda or are uniformly distributed on a given range;
 %   the magnitude of kicks is uniformly distributed on another given range.
-%   Of interest is whether a so-called excursion occurs 
-%   (meaning the viral load variable exceeds a predetermined threshold) 
+%   Of interest is whether a so-called excursion occurs
+%   (meaning the viral load variable exceeds a predetermined threshold)
 %   and, if so, the time at which such an excursion occurs.
 %   Output: a boolean (0 or 1) variable indicating whether an excursion
 %   occurred and a time at which the excursion occurred. When no excursion
 %   occurs, the time is output as NaN.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [excursion_indicator, excursion_time] = trial()
+function [excursion_indicator, excursion_time] = trial(exp_uniform, ...
+        min_kick_size, max_kick_size, lambda, ...
+        min_interkick_time, max_interkick_time)
 %%%%%%%%%%%%%%%% System parameters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   the following constants are coefficients in the ODE model presented 
+%   the following constants are coefficients in the ODE model presented
 %   in the paper "An immuno-epidemiological model for transient immune
-%   protection: A case study for viral respi- ratory infections" 
+%   protection: A case study for viral respi- ratory infections"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 p = 0.35; c = 20; mu = 0.2; Beta = 5e-7; V_m = 10;
 g = 0.8; C_t = 7e7; Beta_prime = 2e-5;
@@ -110,12 +114,12 @@ if exp_uniform == 1
 else
     N = floor(max_time/min_interkick_time);
     tau = min_interkick_time + (max_interkick_time-min_interkick_time)*rand(N,1);
-    N = find(cumsum(tau) >= max_time,1) - 1; % number of kicks so that sum 
+    N = find(cumsum(tau) >= max_time,1) - 1; % number of kicks so that sum
     % of inter-kick times does not exceed max_time
     tau = [tau(1:N); max_time - sum(tau(1:N))];
 end
 %%% kick sizes
-% note 0 is added as a placeholder at the end in order to match the sizes 
+% note 0 is added as a placeholder at the end in order to match the sizes
 % of the tau and kicks vectors, but 0 is never used
 kicks = [min_kick_size + (max_kick_size-min_kick_size)*rand(N,1); 0];
 
@@ -132,7 +136,7 @@ if N>0
         % store times output by ODE45
         % (shifted by previous total kick times)
         % and store ODE variables output by ODE45
-        tall = [tall; ts+sum(tau(1:(j-1)))]; 
+        tall = [tall; ts+sum(tau(1:(j-1)))];
         Yall = [Yall; Ys];
     end
 else % special case when no kicks occur
@@ -145,7 +149,7 @@ excursion_threshold = 2.5e5; % viral load considered to cause illness
 minimum_time_index = find(tall >= 5,1); % first position where time is >=5
 
 %check if viral load is ever greater than or equal to excursion_threshold
-if max(Yall(minimum_time_index:end,1)) >= excursion_threshold  
+if max(Yall(minimum_time_index:end,1)) >= excursion_threshold
     excursion_time_index = find(Yall(minimum_time_index:end,1) >= ...
         excursion_threshold,1) + minimum_time_index;
     excursion_indicator = 1; %1 for excursion
