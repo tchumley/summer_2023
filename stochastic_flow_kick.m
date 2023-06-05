@@ -51,7 +51,7 @@ if exp_uniform == 1
 else
     save(strcat("excursion_uniform", datestr(datetime), ...
         ".mat"), "excursion_indicator", "excursion_time", ...
-        "min_kick_size", "max_kick_size")
+        "min_interkick_time", "max_interkick_time")
 end
 
 %%%%%%%%%%%%%%%% Plotting %%%%%%%%%%%%%%%%%%%%%%%%
