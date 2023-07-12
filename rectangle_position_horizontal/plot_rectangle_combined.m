@@ -29,22 +29,30 @@ combined = importdata("rectangle_data_combine.mat");
 
 %plot3(lower_bounds,taus,probability_of_excursion )
 
-probabilities = zeros(9, 11);
+probabilities = zeros(11, 9);
 kvalue = [1000:1000:11000];
 tvalue = [4:1:12];
 
 for j = 1:length(combined)
     tindex = find(combined(j).taus == tvalue);
     bound_index = find(combined(j).lower_bounds == kvalue);
-    probabilities(tindex,bound_index) = combined(j).probabilities;
+    probabilities(bound_index,tindex) = combined(j).probabilities;
 
 end
 
 %%
 figure(1)
-[k,t] = meshgrid(kvalue,tvalue);
+[t,k] = meshgrid(tvalue,kvalue);
 
-surf(k,t,probabilities)
-xlabel('kick size')
-ylabel('mean flow time')
+surf(t,k,probabilities)
+xlabel('mean flow time')
+ylabel('kick size')
 zlabel('probability of excursion')
+
+%%
+figure(2)
+contourf(tvalue,kvalue,probabilities)
+xlabel('mean flow time')
+ylabel('kick size')
+colorbar
+clim([0 1])
