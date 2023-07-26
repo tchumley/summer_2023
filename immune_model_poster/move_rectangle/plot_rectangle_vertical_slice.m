@@ -3,16 +3,12 @@ kvalue = [1000:1000:11000];
 tvalue = [4:1:12];
 [t,k] = meshgrid(tvalue,kvalue);
 
+% create nine probability_matrix that record probability of excursion based on kick sizes for each tau value
+% plot each probability_matrix to get a slice
+% hold on to get the whole graph
 figure(1)
 for i = 1:9
     A=zeros(2,1)+tvalue(i);
-%     x = linspace(min(A),max(A),11) ;
-%     y = linspace(min(kvalue),max(kvalue),11) ;
-%     [Xi,Yi] = meshgrid(x,y) ;
-%     Zi = griddata(A,kvalue,probabilities(:,i),Xi,Yi) ;
-%     surf(Zi)
-    
-%     plot3(A,kvalue,probabilities(:,i))
     probability_matrix = zeros(11, 2);
     probability_matrix(:,2) = probabilities(:,i);
     surf(A,kvalue,probability_matrix,'EdgeColor','white')
