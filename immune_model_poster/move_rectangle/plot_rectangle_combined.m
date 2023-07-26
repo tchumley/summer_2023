@@ -29,6 +29,9 @@ combined = importdata("rectangle_data_combine.mat");
 
 %plot3(lower_bounds,taus,probability_of_excursion )
 
+%%
+% create a new matrix to store the data
+
 probabilities = zeros(11, 9);
 kvalue = [1000:1000:11000];
 tvalue = [4:1:12];
@@ -41,6 +44,7 @@ for j = 1:length(combined)
 end
 
 %%
+% plot 3D graph for probabilities of excursion based on tau values and kick sizes
 figure(1)
 [t,k] = meshgrid(tvalue,kvalue);
 
@@ -60,6 +64,7 @@ zticks([0,0.2,0.4,0.6,0.8,1.0])
 
 
 %%
+% plot 2D graph that show probabilities of excursion by color based on tau values and kick sizes
 figure(2)
 contourf(tvalue,kvalue,probabilities)
 xlabel('mean flow time')
@@ -67,7 +72,7 @@ ylabel('kick size')
 colorbar
 clim([0 1])
 
-eps_save(1,'rectangle_3D')
+% eps_save(1,'rectangle_3D')
 
 function y = eps_save(fig_number,filename)
 figure(fig_number)
