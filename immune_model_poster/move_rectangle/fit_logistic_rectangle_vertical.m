@@ -34,21 +34,14 @@ std_probability_of_excursion = std_probability_of_excursion(I);
 std_time_to_excursion = std_time_to_excursion(I);
 number_of_excursion = number_of_excursion(I);
 
+% fit logistic regression for probability of excursion
 Qpre = fit_logistic(lower_bounds,probability); 
 
+% plot the original data and fit logistic data
 figure(1)
 plot(lower_bounds, probability, '*-', 'DisplayName','Data')
-
 xlabel('kick size')
 ylabel('probability of excursion')
-% axis([0 30 0 0.18])
-% xticks([0:5:30])
-% yticks([0:0.03:0.18])
-% ax.XAxis.FontSize = 6;
-% ax.YAxis.FontSize = 6;
-% xlabel("flow time \tau", 'FontSize', 8)
-% ylabel("kick size x1e5",'FontSize',8)
-
 set(gca,'LooseInset',get(gca,'TightInset'));
 hold on
 plot(lower_bounds,Qpre,'DisplayName','Logistic')
@@ -63,18 +56,6 @@ xticks([0.5,0.7,0.9,1.1,1.3,1.5]*1e4)
 fontsize(legend,16,'points')
 %title('kick size vs. probability of excursion, 7<tau<8','FontSize',12)
 hold off
-eps_save(1,'fitLogistic')
-
-function y = eps_save(fig_number,filename)
-figure(fig_number)
-set(gcf,'PaperUnits','inches');
-oldsizes = get(gcf,'PaperPosition');
-% This returns [x y width height]
-newwidth = 3.2;
-newheight = oldsizes(4)/oldsizes(3)*newwidth;
-set(gcf,'PaperPosition',[0 0 newwidth newheight]);
-print('-opengl',filename,'-depsc','-r300')
-end
 
 % [ Qpre, p, sm, varcov] = fit_logistic(lower_bounds,probability)
 % p
