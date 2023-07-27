@@ -1,4 +1,4 @@
-load('excursion_result_time_uniform15-Apr-2023 18_49_12.mat')
+load('uniform10000.mat')
 A = transpose(excursion_result)
 probability_of_excursion = cumsum(A)./(1:10000);
 figure(1)
