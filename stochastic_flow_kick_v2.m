@@ -23,7 +23,7 @@ exp_uniform = 1;
 % kicks arrive according to Poisson process with rate lambda; the
 % inter-kick times are exponentially distributed with parameter lambda
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mean_interkick_time = 60:5:75;
+mean_interkick_time = 7:3:100;
 lambda = 1./mean_interkick_time;
 % or kicks are uniform on the interval bounded by min/max_kick_size
 min_interkick_time = 7;
@@ -31,7 +31,7 @@ max_interkick_time = 8;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%% Monte Carlo simulation %%%%%%%%
-number_of_trials = 10;
+number_of_trials = 10000;
 excursion_indicator = zeros(number_of_trials,1);
 excursion_time = zeros(number_of_trials,1);
 
